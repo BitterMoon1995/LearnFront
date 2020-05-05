@@ -45,7 +45,7 @@ public class Generator {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://localhost:3306/learnfront?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=false");
+        dsc.setUrl("jdbc:mysql://localhost:3306/zmchina?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=false");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");
         dsc.setPassword("root");
