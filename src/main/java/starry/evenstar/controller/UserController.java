@@ -2,12 +2,10 @@ package starry.evenstar.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
 import starry.evenstar.entity.User;
 import starry.evenstar.service.IUserService;
 import starry.evenstar.utils.Info;
@@ -30,6 +28,7 @@ import java.util.UUID;
 public class UserController {
     @Autowired
     IUserService service;
+    //登陆
     @PostMapping("/login")
     public Result login(@RequestBody User user){
         Result result = new Result();
@@ -52,5 +51,13 @@ public class UserController {
         }
         return result;
 
+    }
+    //查询所有用户
+    @GetMapping("/getAll")
+    public List<User> getAll(@RequestParam Integer pageNum,@RequestParam Integer pageSize){
+        Page<User> page = new Page<>(pageNum, pageSize, false);//第几页 每一页几个 不计数
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        Page<User> userPage = service.page(page);
+        return userPage.getRecords();
     }
 }
