@@ -10,6 +10,7 @@ import starry.evenstar.entity.User;
 import starry.evenstar.service.IUserService;
 import starry.evenstar.utils.Info;
 import starry.evenstar.utils.Result;
+import starry.evenstar.vo.UserVo;
 
 import java.util.List;
 import java.util.Map;
@@ -52,12 +53,35 @@ public class UserController {
         return result;
 
     }
-    //查询所有用户
+
+    //分页查询所有用户
+    //分页需要总条目数witch is extremely important
     @GetMapping("/getAll")
-    public List<User> getAll(@RequestParam Integer pageNum,@RequestParam Integer pageSize){
-        Page<User> page = new Page<>(pageNum, pageSize, false);//第几页 每一页几个 不计数
-        QueryWrapper<User> wrapper = new QueryWrapper<>();
-        Page<User> userPage = service.page(page);
-        return userPage.getRecords();
+    public UserVo getAll(@RequestParam Integer pageNum, @RequestParam Integer pageSize
+            , @RequestParam String condition){
+        UserVo vo = new UserVo();
+        if (condition.isEmpty()){
+            Page<User> page = new Page<>(pageNum, pageSize,false);//第几页 每一页几个 不计数
+            Page<User> userPage = service.page(page);
+            vo.setUserList(userPage.getRecords());
+            vo.setTotal(service.count());
+        }
+        else {
+            QueryWrapper<User> wrapper = new QueryWrapper<>();
+            wrapper.like("username",condition);
+            Page<User> page = new Page<>(pageNum, pageSize,false);
+            vo.setUserList(service.page(page,wrapper).getRecords());
+            vo.setTotal(service.count(wrapper));
+        }
+        return vo;
     }
+
+
+    //改
+    @PostMapping("/update")
+    public User update(@RequestBody User user){
+        service.updateById(user);
+        return service.getById(user.getId());
+    }
+
 }

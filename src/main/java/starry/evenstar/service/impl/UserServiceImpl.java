@@ -1,5 +1,6 @@
 package starry.evenstar.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import starry.evenstar.entity.User;
 import starry.evenstar.mapper.UserMapper;
 import starry.evenstar.service.IUserService;
@@ -16,5 +17,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+    @Autowired
+    UserMapper mapper;
 
 }
