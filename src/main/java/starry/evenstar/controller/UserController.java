@@ -12,6 +12,7 @@ import starry.evenstar.utils.Info;
 import starry.evenstar.utils.Result;
 import starry.evenstar.vo.UserVo;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -63,19 +64,27 @@ public class UserController {
         if (condition.isEmpty()){
             Page<User> page = new Page<>(pageNum, pageSize,false);//第几页 每一页几个 不计数
             Page<User> userPage = service.page(page);
-            vo.setUserList(userPage.getRecords());
+            List<User> userList = userPage.getRecords();
+            vo.setUserList(userList);
             vo.setTotal(service.count());
         }
         else {
             QueryWrapper<User> wrapper = new QueryWrapper<>();
             wrapper.like("username",condition);
             Page<User> page = new Page<>(pageNum, pageSize,false);
-            vo.setUserList(service.page(page,wrapper).getRecords());
+            List<User> userList = service.page(page, wrapper).getRecords();
+            Collections.sort(userList);
+            vo.setUserList(userList);
             vo.setTotal(service.count(wrapper));
         }
         return vo;
     }
 
+    //周神为了实现每一次完美的分页&排序(先order再username)查询，自写SQL，顺利完成
+    @GetMapping("/resetOrder")
+    public void resetOrder(){
+        service.resetOrder();
+    }
 
     //改
     @PostMapping("/update")
@@ -84,4 +93,31 @@ public class UserController {
         return service.getById(user.getId());
     }
 
+    //增
+    @PostMapping("/add")
+    public Result add(@RequestBody User user){
+        Result result = new Result(new Object(),new Info());
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("username",user.getUsername());
+        List<User> list = service.list(wrapper);
+        if (list.isEmpty()){
+            service.save(user);
+            //如果不返数据，要将data置空返回去，不然要报500 no serializer（不会影响业务）
+            //因为Object未实现那个接口，原则上不能参与数据传输
+            result.data=null;
+            result.info.setMsg("添加用户成功！");
+            result.info.setCode(200);
+        }
+        else {
+            result.data=null;
+            result.info.setMsg("用户已存在！");
+            result.info.setCode(400);
+        }
+        return result;
+    }
+    //删
+    @DeleteMapping("/delOne")
+    public Boolean delOne(@RequestParam String id){
+        return service.removeById(id);
+    }
 }

@@ -20,4 +20,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Autowired
     UserMapper mapper;
 
+    @Override
+    public void resetOrder() {
+        mapper.resetOrder();
+    }
 }

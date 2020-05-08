@@ -1,5 +1,6 @@
 package starry.evenstar.mapper;
 
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 import starry.evenstar.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -14,5 +15,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Repository
 public interface UserMapper extends BaseMapper<User> {
-
+    @Select("ALTER TABLE `user` ORDER BY role,username")
+    void resetOrder();
 }
