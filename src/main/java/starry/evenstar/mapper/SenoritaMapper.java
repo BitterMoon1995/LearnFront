@@ -1,6 +1,5 @@
 package starry.evenstar.mapper;
 
-import starry.evenstar.entity.Senorita;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
